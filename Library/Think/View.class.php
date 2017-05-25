@@ -202,6 +202,10 @@ class View
             // 找不到当前主题模板的时候定位默认主题中的模板
             $file = dirname(THEME_PATH) . '/' . C('DEFAULT_THEME') . '/' . $template . C('TMPL_TEMPLATE_SUFFIX');
         }
+        if(!is_file($file)){
+            //找不到文件，从公共模板里找
+            $file = THEME_PATH."Public/".ACTION_NAME;
+        }
         return $file;
     }
 
