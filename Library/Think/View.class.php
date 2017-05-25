@@ -203,8 +203,8 @@ class View
             $file = dirname(THEME_PATH) . '/' . C('DEFAULT_THEME') . '/' . $template . C('TMPL_TEMPLATE_SUFFIX');
         }
         if(!is_file($file)){
-            //找不到文件，从公共模板里找
-            $file = THEME_PATH."Public/".ACTION_NAME;
+            //模板没找到，则去公共目录下找通用模板
+            $file = THEME_PATH."Public/".ACTION_NAME . C('TMPL_TEMPLATE_SUFFIX');
         }
         return $file;
     }
