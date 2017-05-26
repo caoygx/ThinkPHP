@@ -2001,6 +2001,9 @@ class Model
      */
     public function where($where, $parse = null)
     {
+        if($this->db instanceof \Think\Db\Driver\Mongo){
+            $this->db->where($where, null, null); return $this;
+        }
         if (!is_null($parse) && is_string($where)) {
             if (!is_array($parse)) {
                 $parse = func_get_args();
@@ -2034,6 +2037,10 @@ class Model
      */
     public function limit($offset, $length = null)
     {
+        if($this->db instanceof \Think\Db\Driver\Mongo){
+            $this->db->limit($offset, $length );
+            return $this; 
+        }
         if (is_null($length) && strpos($offset, ',')) {
             list($offset, $length) = explode(',', $offset);
         }

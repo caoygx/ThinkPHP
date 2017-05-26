@@ -267,27 +267,53 @@ class Think
      * @param int $errline 错误行数
      * @return void
      */
-    public static function appError($errno, $errstr, $errfile, $errline)
-    {
-        switch ($errno) {
-            case E_ERROR:
-            case E_PARSE:
-            case E_CORE_ERROR:
-            case E_COMPILE_ERROR:
-            case E_USER_ERROR:
-                ob_end_clean();
-                $errorStr = "$errstr " . $errfile . " 第 $errline 行.";
-                if (C('LOG_RECORD')) {
-                    Log::write("[$errno] " . $errorStr, Log::ERR);
-                }
-
-                self::halt($errorStr);
-                break;
-            default:
-                $errorStr = "[$errno] $errstr " . $errfile . " 第 $errline 行.";
-                self::trace($errorStr, '', 'NOTIC');
-                break;
+    static public function appError($errno, $errstr, $errfile, $errline) {
+        if(CONF_ENV == 'dev2'){
+            switch ($errno) {
+                case E_ERROR:
+                case E_WARNING:
+                case E_PARSE:
+                    //case E_NOTICE:
+                case E_CORE_ERROR:
+                case E_COMPILE_ERROR:
+                case E_COMPILE_WARNING:
+                case E_USER_ERROR:
+                case E_USER_WARNING:
+                case E_USER_NOTICE:
+                case E_STRICT:
+                case E_RECOVERABLE_ERROR:
+                case E_DEPRECATED:
+                case E_USER_DEPRECATED:
+                case E_ALL:
+                    ob_end_clean();
+                    $errorStr = "$errstr ".$errfile." 第 $errline 行.";
+                    if(C('LOG_RECORD')) Log::write("[$errno] ".$errorStr,Log::ERR);
+                    self::halt($errorStr);
+                    break;
+                default:
+                    $errorStr = "[$errno] $errstr ".$errfile." 第 $errline 行.";
+                    self::trace($errorStr,'','NOTIC');
+                    break;
+            }
+        }else {
+            switch ($errno) {
+                case E_ERROR:
+                case E_PARSE:
+                case E_CORE_ERROR:
+                case E_COMPILE_ERROR:
+                case E_USER_ERROR:
+                    ob_end_clean();
+                    $errorStr = "$errstr " . $errfile . " 第 $errline 行.";
+                    if (C('LOG_RECORD')) Log::write("[$errno] " . $errorStr, Log::ERR);
+                    self::halt($errorStr);
+                    break;
+                default:
+                    $errorStr = "[$errno] $errstr " . $errfile . " 第 $errline 行.";
+                    self::trace($errorStr, '', 'NOTIC');
+                    break;
+            }
         }
+
     }
 
     // 致命错误捕获
