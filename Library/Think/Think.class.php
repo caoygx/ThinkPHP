@@ -268,7 +268,7 @@ class Think
      * @return void
      */
     static public function appError($errno, $errstr, $errfile, $errline) {
-        if(CONF_ENV == 'dev2'){
+        if('CONF_ENV' == 'dev2'){
             switch ($errno) {
                 case E_ERROR:
                 case E_WARNING:

@@ -34,6 +34,7 @@ class App
         define('IS_POST', REQUEST_METHOD == 'POST' ? true : false);
         define('IS_PUT', REQUEST_METHOD == 'PUT' ? true : false);
         define('IS_DELETE', REQUEST_METHOD == 'DELETE' ? true : false);
+        define('IS_MOBILE',     isMobile());
 
         // URL调度
         Dispatcher::dispatch();

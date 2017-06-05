@@ -175,6 +175,7 @@ class View
      */
     public function parseTemplate($template = '')
     {
+        $oldTemplate = $template;
         if (is_file($template)) {
             return $template;
         }
@@ -204,7 +205,10 @@ class View
         }
         if(!is_file($file)){
             //模板没找到，则去公共目录下找通用模板
-            $file = THEME_PATH."Public/".ACTION_NAME . C('TMPL_TEMPLATE_SUFFIX');
+            $file = THEME_PATH."Public/".$oldTemplate . C('TMPL_TEMPLATE_SUFFIX');
+            if(!is_file($file)){
+                $file = THEME_PATH."Public/".ACTION_NAME . C('TMPL_TEMPLATE_SUFFIX');
+            }
         }
         return $file;
     }
