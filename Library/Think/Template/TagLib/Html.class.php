@@ -424,6 +424,7 @@ class Html extends TagLib
         if (!empty($key)) {
             $colNum++;
         }
+        $colNum += 2; //用于bootstrap布局样式里多了befer,after两个伪元素
 
         //显示开始
         $parseStr = "<!-- Think 系统列表组件开始 -->\n";
@@ -453,7 +454,7 @@ class Html extends TagLib
             }
             $showname[2] = isset($showname[2]) ? $showname[2] : $showname[0];
             if ($sort) {
-                $parseStr .= '<a href="javascript:sortBy(\'' . $property[0] . '\',\'{$sort}\',\'' . ACTION_NAME . '\')" title="按照' . $showname[2] . '{$sortType} ">' . $showname[0] . '<eq name="order" value="' . $property[0] . '" ><img src="__PUBLIC__/images/{$sortImg}.gif" width="12" height="17" border="0" align="absmiddle"></eq></a></th>';
+                $parseStr .= '<a href="javascript:sortBy(\'' . $property[0] . '\',\'{$sort}\',\'' . ACTION_NAME . '\')" title="按照' . $showname[2] . '{$sortType} ">' . $showname[0] . '<eq name="order" value="' . $property[0] . '" > <span class="glyphicon {$sortImg}" aria-hidden="true"></span> </eq></a></th>';
             } else {
                 $parseStr .= $showname[0] . '</th>';
             }
