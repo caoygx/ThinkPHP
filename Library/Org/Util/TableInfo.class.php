@@ -162,7 +162,7 @@ class TableInfo extends Controller
 
         $this->allRows = $str;
         $r = $this->fetch("tpl_form");
-
+//var_dump($r);exit;
         foreach ($this->arrOptions as $k => $v) {
             $this->assign('opt_' . $k, $v);
         }
@@ -604,8 +604,8 @@ class TableInfo extends Controller
 
         } else {
             if ($inputAttribute['type'] == "text") {
-                //<textarea name="textarea" cols="30" rows="10" id="textarea"></textarea>
-                $inputStr .= "<input class=\"form-control\" name=\"$name\" type=\"text\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo.' . $name . '}"' . " />";
+                $inputStr .= "<input class=\"form-control\" name=\"$name\" type=\"text\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo[' . $name . '] ? $vo[' . $name . '] : $_GET[' . $name . ']}"' . " />";
+                //$inputStr .= "<input class=\"form-control\" name=\"$name\" type=\"text\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo[$name]}"' . " />";
             } elseif ($inputAttribute['type'] == "textare") {
                 $inputStr .= "<textarea class=\"form-control\" name=\"$name\" cols=\"30\" rows=\"10\" id=\"$name\"></textarea>";
             }
