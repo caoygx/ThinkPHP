@@ -62,7 +62,14 @@ class Html extends TagLib
                 $parseStr = '<script type="text/javascript" src="__ROOT__/Public/Js/UbbEditor.js"></script><div style="padding:1px;width:' . $width . ';border:1px solid silver;float:left;"><script LANGUAGE="JavaScript"> showTool(); </script></div><div><TEXTAREA id="UBBEditor" name="' . $name . '"  style="clear:both;float:none;width:' . $width . ';height:' . $height . '" >' . $content . '</TEXTAREA></div><div style="padding:1px;width:' . $width . ';border:1px solid silver;float:left;"><script LANGUAGE="JavaScript">showEmot();  </script></div>';
                 break;
             case 'KINDEDITOR':
-                $parseStr = '<script type="text/javascript" src="__ROOT__/Public/Js/KindEditor/kindeditor.js"></script><script type="text/javascript"> KE.show({ id : \'' . $id . '\'  ,urlType : "absolute"});</script><textarea id="' . $id . '" style="' . $style . '" name="' . $name . '" >' . $content . '</textarea>';
+                $parseStr = '<script type="text/javascript" src="__ROOT__/Public/Js/kindeditor/kindeditor-all-min.js"></script>
+                            
+                            <script>
+                                    KindEditor.ready(function(K) {
+                                            window.editor = K.create(\'#'.$id.'\');
+                                    });
+                            </script>
+                            <textarea id="' . $id . '" style="' . $style . '" name="' . $name . '" >' . $content . '</textarea>';
                 break;
             default:
                 $parseStr = '<textarea id="' . $id . '" style="' . $style . '" name="' . $name . '" >' . $content . '</textarea>';

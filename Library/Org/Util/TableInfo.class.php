@@ -155,7 +155,7 @@ class TableInfo extends Controller
         $str .= '<form class="form-horizontal" role="form"  method="post" action="__URL__/save/">';
         foreach ($allFields as $columnInfo) {
             if (!empty($selectedFields) && !in_array($columnInfo['COLUMN_NAME'], $selectedFields)) continue;
-            if (!I('hasId') && $columnInfo['COLUMN_KEY'] == "PRI") continue;
+            //if (!I('hasId') && $columnInfo['COLUMN_KEY'] == "PRI") continue;
             $str .= $this->createFormRow($columnInfo);
             //$str .= '<option value="'.$columnInfo[$columnNameKey].'" >'.$columnInfo[$columnNameKey]."</option>\r\n";
         }
@@ -447,22 +447,21 @@ class TableInfo extends Controller
                var_dump($options);*/
 
         $arrTitle = explode("-", $title);
+        $c = count($arrTitle);
         switch ($c) {
 
             //状态-select-禁用则不能访问
-            case $c >= 3:
+            case ($c >= 3):
                 $tips = $arrTitle[2];
 
             //状态-select
-            case $c >= 2:
+            case ($c >= 2):
                 $htmlType = $arrTitle[1];
 
             //状态
-            case $c >= 1 :
+            case ($c >= 1) :
                 $name = $arrTitle[0];
 
-            default:
-                break;
 
         }
         /* var_dump($name);
@@ -471,14 +470,15 @@ class TableInfo extends Controller
 
 
         //显示页面分析
-        if (!isset($showPage)) $showPage = 7;
+
+        if (strlen($showPage)<1 || $showPage == null) $showPage = 15;
+
         if(strlen($showPage) == 4) $showPage = bindec($showPage);
         $arrShowPages = [];
         if ($showPage & self::ADD) $arrShowPages[] = 'add';
         if ($showPage & self::EDIT) $arrShowPages[] = 'edit';
         if ($showPage & self::LIST) $arrShowPages[] = 'list';
         if ($showPage & self::SEARCH) $arrShowPages[] = 'search';
-
 
         //选项分析
         if (!empty($options)) {
@@ -541,13 +541,45 @@ class TableInfo extends Controller
         $inputStr = "";
         $confStr = "";
 
+        $this->hidden = 0; //不是隐藏元素
         if (!empty($commentInfo['htmlType'])) {
+            $commentInfo['htmlType'] = strtolower($commentInfo['htmlType']);
+
+            if($commentInfo['htmlType'] == 'password'){
+                $inputStr .= "<input  type=\"password\"  class=\"form-control\" name=\"$name\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo.' . $name . '}"' . " />";
+            }elseif ($commentInfo['htmlType'] == 'hidden'){
+                $inputStr .= "<input  type=\"hidden\"  class=\"form-control\" name=\"$name\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo.' . $name . '}"' . " />";
+                $this->hidden = 1;
+            }elseif($commentInfo['htmlType'] == 'datepicker'){
+                $inputStr = '<div class="input-group date" data-provide="datepicker">
+                                <input type="text" class="form-control">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>';
+               /* $inputStr .= "<input size=\"16\" type=\"text\" value=\"\" readonly class=\"form_datetime\">";*/
+                $inputStr .= ' <script>
+                                    $(".date").datepicker({
+                                    language:"zh-CN",
+                                    format: "yyyy-mm-dd "
+                                });
+                            </script>';
+
+
+
+            }elseif($commentInfo['htmlType'] == 'editor'){
+                $inputStr .= "<html:editor id=\"editor\" name=\"remark\" type=\"kindeditor\" style=\"\" ></html:editor>"; //{$vo.remark}
+
+            }
+
+
             if ($commentInfo['options']) {
                 $this->options[$columnInfo['COLUMN_NAME']] = var_export($commentInfo['options'], 1);
                 $this->arrOptions[$columnInfo['COLUMN_NAME']] = $commentInfo['options'];
                 if ($commentInfo['htmlType'] == "select") {
 
-                    $inputStr .= "<html:select options='opt_{$columnInfo['COLUMN_NAME']}' selected='{$columnInfo['COLUMN_NAME']}_selected' name=\"{$columnInfo['COLUMN_NAME']}\" />";
+                    $first = $this->page == 'search' ? 'first="请选择"' : "";
+                    $inputStr .= "<html:select $first options='opt_{$columnInfo['COLUMN_NAME']}' selected='{$columnInfo['COLUMN_NAME']}_selected' name=\"{$columnInfo['COLUMN_NAME']}\" />";
                     /*$inputStr .= " <select name=\"select\" id=\"select\">";
                     foreach($commentInfo['options'] as $value => $text){
                         $inputStr.="<option value=\"{$value}\">$text</option>";
