@@ -1890,3 +1890,119 @@ function getDefaultStyle($style)
         return $info;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if (!function_exists('getallheaders')){
+    function getallheaders($raw=false) { 
+        $headers = [];
+        foreach ($_SERVER as $name => $value) {
+            if (substr($name, 0, 5) == 'HTTP_') {
+                $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
+                $headers[$key] = $value;
+            }
+        }
+        if($raw){
+            $str = "";
+            foreach ($headers as $k => $v){
+                $str .= "$k: $v\r\n";
+            }
+            return $str;
+        }
+        return $headers; 
+    }
+}
+
+function make_coupon_card() {
+    $code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $rand = $code[rand(0,25)]
+        .strtoupper(dechex(date('m')))
+        .date('d').substr(time(),-5)
+        .substr(microtime(),2,5)
+        .sprintf('%02d',rand(0,99));
+    for(
+        $a = md5( $rand, true ),
+        $s = '0123456789ABCDEFGHIJKLMNOPQRSTUV',
+        $d = '',
+        $f = 0;
+        $f < 8;
+        $g = ord( $a[ $f ] ),
+        $d .= $s[ ( $g ^ ord( $a[ $f + 8 ] ) ) - $g & 0x1F ],
+        $f++
+    );
+    return $d;
+}
+//echo make_coupon_card();
+
+
+/**
+ * 十进制数转换成62进制
+ *
+ * @param integer $num
+ * @return string
+ */
+function to62($num) {
+    $to = 62;
+    $dict = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $ret = '';
+    do {
+        $ret = $dict[bcmod($num, $to)] . $ret;
+        $num = bcdiv($num, $to);
+    } while ($num > 0);
+    return $ret;
+}
+
+/**
+ * 62进制数转换成十进制数
+ *
+ * @param string $num
+ * @return string
+ */
+function from62($num) {
+    $from = 62;
+    $num = strval($num);
+    $dict = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $len = strlen($num);
+    $dec = 0;
+    for($i = 0; $i < $len; $i++) {
+        $pos = strpos($dict, $num[$i]);
+        $dec = bcadd(bcmul(bcpow($from, $len - $i - 1), $pos), $dec);
+    }
+    return $dec;
+}
+
+function datetime(){
+    return date('Y-m-d H:i:s',time());
+}
+
+//字符串version转int
+function versionToInt($version){
+    if(strpos($version,',') === false){
+        return $version;
+    }else{
+        $decimals = explode('.',$version)[1];
+        return $version*$decimals;
+    }
+
+}
