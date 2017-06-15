@@ -2173,6 +2173,3 @@ function versionToInt($version){
 	}
 
 }
-
-?>
-

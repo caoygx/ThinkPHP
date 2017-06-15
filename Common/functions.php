@@ -2006,3 +2006,91 @@ function versionToInt($version){
     }
 
 }
+
+
+
+/**
+ * curl
+ *
+ * @param
+ *        	string url
+ * @param
+ *        	array 数据
+ * @param
+ *        	int 请求超时时间
+ * @param
+ *        	bool HTTPS时是否进行严格认证
+ * @return string
+ */
+function curl_get_content($url, $data = "", $method = "get", $timeout = 30, $CA = false){
+
+    // $url = "http://www.baidu.com";
+    $cacert = getcwd() . '/cacert.pem'; // CA根证书
+    $SSL = substr($url, 0, 8) == "https://" ? true : false;
+    $ch = curl_init();
+    if(is_object($data)){
+        $data = (array)$data;
+    }
+
+    $data_is_json = is_json($data);
+
+    $method = strtolower($method);
+    if($method == 'get') {
+        if(is_array($data)) {
+            $data = http_build_query($data);
+        }
+        $url .= "?" . $data;
+    } else {
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data)); //data with URLEncode
+    }
+    //echo $url;
+    //var_dump($data);exit;
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout - 2);
+    if($SSL && $CA) {
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true); // 只信任CA颁布的证书
+        curl_setopt($ch, CURLOPT_CAINFO, $cacert); // CA根证书（用来验证的网站证书是否是CA颁布）
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); // 检查证书中是否设置域名，并且是否与提供的主机名匹配
+    } else if($SSL && ! $CA) {
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 信任任何证书
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // 检查证书中是否设置域名
+    }
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Expect:'
+    )); // 避免data数据过长问题
+    // var_dump($data);
+
+    $headerArr[] = 'PARAMS:android#1.4.2#wandoujias';
+    if($data_is_json) $headerArr[] = 'Content-Type: application/json; charset=utf-8';
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headerArr);
+    //curl_setopt($ch, CURLOPT_PROXY, "192.168.3.111:8888");
+    $ret = curl_exec($ch);
+    if(empty($ret)) {
+        var_dump(curl_error($ch)); // 查看报错信息
+    }
+    // var_dump($ret);
+    // exit('x');
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if($httpCode != 200) {
+        $tmp = array();
+        $tmp['http_code'] = $httpCode;
+        $tmp['data'] = $ret;
+
+        //echo "\n服务器错误：$httpCode";
+        //echo $ret;
+        $ret = json_encode($tmp);
+    }
+    curl_close($ch);
+    //var_dump($ret);
+    return $ret;
+}
+
+function is_json($string) {
+    json_decode($string);
+    return (json_last_error() == JSON_ERROR_NONE);
+}
