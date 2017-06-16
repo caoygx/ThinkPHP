@@ -160,6 +160,7 @@ function getUserAuth(){
 		$u['username'] = cookie("username","");
 		$u['uid'] = \Think\Crypt::decrypt(cookie('uid',""),C('crypt_key'));
 		$u['type'] = cookie('type',"");
+		$u = array_filter($u);
 		//var_dump($_COOKIE);
 		//exit;
 	}else{

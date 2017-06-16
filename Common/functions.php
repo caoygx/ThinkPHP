@@ -2094,3 +2094,106 @@ function is_json($string) {
     json_decode($string);
     return (json_last_error() == JSON_ERROR_NONE);
 }
+
+
+
+
+
+//================== 用户相关 start ================//
+/**
+ * 保存用户登录凭证
+ */
+function setUserAuth($u){
+    //$u = array();
+    if (C('AUTH_STORE_WAY') == 'session') {
+        //var_dump($u);
+
+        $_SESSION[C('USER_AUTH_KEY')] = $u['id'];
+        $_SESSION["username"] = $u['username'];
+
+    }else{
+        import("ORG.Util.Cookie");
+        //var_dump(Cookie::b("uid", $u['uid']));
+        //$id = Cookie::get(C('USER_AUTH_KEY'));
+        cookie("username",$u['username']);
+        cookie("uid", \Think\Crypt::encrypt($u['uid'],C('crypt_key')));
+        cookie('type', $u['type']);
+    }
+}
+
+/**
+ * 获取用户登录凭证信息
+ */
+function getUserAuth(){
+    $u = array();
+    if (C('AUTH_STORE_WAY') == 'session') {
+        $id = $_SESSION[C('USER_AUTH_KEY')];
+        $u['username'] = $_SESSION["username"];
+        $u['uid'] = $_SESSION[C('USER_AUTH_KEY')];
+        $u['type'] = $_SESSION['type'];
+        $u = array_filter($u);
+
+    }else{
+        //$id = cookie(C('USER_AUTH_KEY'));
+        $u['username'] = cookie("username","");
+        $u['uid'] = \Think\Crypt::decrypt(cookie('uid',""),C('crypt_key'));
+        $u['type'] = cookie('type',"");
+        $u = array_filter($u);
+        //var_dump($_COOKIE);
+        //exit;
+    }
+
+    return $u;
+}
+
+/**
+ * 获取用户登录凭证信息
+ */
+function clearUserAuth(){
+    $u = array();
+    if (C('AUTH_STORE_WAY') == 'session') {
+        unset($_SESSION[C('USER_AUTH_KEY')]);
+        unset($_SESSION["username"]);
+        unset($_SESSION[C('USER_AUTH_KEY')]);
+        unset($_SESSION['utype']);
+
+    }else{
+
+        cookie("username",null);
+        cookie("uid",null);
+    }
+    return $u;
+}
+
+
+
+/**
+ * 得到登录的用户id
+ */
+function getUserId(){
+    if (C('AUTH_STORE_WAY') == 'USER_AUTH_KEY') {
+         $id = $_SESSION[C('USER_AUTH_KEY')];
+       
+    }else{
+       
+         $id = Cookie::get(C('USER_AUTH_KEY'));
+
+    }
+    //echo $_SESSION[C('USER_AUTH_KEY')];
+    return $id;
+}
+
+/**
+ * 得到登录的用户信息
+ */
+function getUserInfo(){
+    //个人简历
+    //企业信息
+    //学校信息
+    $sql = "";
+    $user = D('Member');
+    if ($id = getUserId()) {
+        return $user->find(getUserId());
+    }
+}
+//================== 用户相关 end ================//
