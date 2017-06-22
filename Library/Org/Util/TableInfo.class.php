@@ -406,11 +406,26 @@ class TableInfo extends Controller
      *
      * 选项： 选项1:选项1值，选项2：缺项2值
      * 状态-select-禁用则不能访问 | 7 | require | 0:禁用,1:正常,2:审核中
+     *
+     *
+     * 验证正则支持，这个比较蛋疼，由于正则里可以使用任意字符，与我们使用的分隔符有冲突，使用特殊符号将正则括起来
+     * <<正则表达式>>,在此只允许验证里出现，否则就不知道<< >>括起来的什么了，注意目前<<>>不支持转义，如果正则表达式里还有<< >> 那就只能over了。
+     *  首先将正则提取出来，再进行分隔
+     *
      * @param $comment
      * @return array
      */
     function parseComment($comment)
     {
+        //先提取正则，避免正则里的特殊符号污染后面处理
+        $reg = '/<<(.+)>>/';
+        $validateReg = '';
+        preg_match($reg,$comment,$match);
+        if(!empty($match[1])){
+            $validateReg = $match[1];
+            $comment = preg_replace($reg,'reg',$comment);
+        }
+
         //$comment = '状态-select-禁用则不能访问 | 7 | require | 0:禁用,1:正常,2:审核中';
         //$id=$name='status';
         $ret = [];
@@ -494,7 +509,22 @@ class TableInfo extends Controller
 
         //验证规则分析
         if(!empty($checkType)){
-            $arrRules = explode("-", $checkType);
+            $arrRules = [];
+            $allRules = explode("-", $checkType);
+            foreach ($allRules as $k => $v){
+                $ruleInfo = explode(':',$v);
+                $temp = [];
+                $temp['type'] = $ruleInfo[0];
+                if($ruleInfo[0] == 'reg'){
+                    $temp['reg'] = $validateReg;
+                }
+
+                if($ruleInfo[1]){
+                    $temp['msg']=$ruleInfo[1];
+                }
+                $arrRules[] = $temp;
+            }
+
         }
 
 
@@ -541,18 +571,21 @@ class TableInfo extends Controller
         $inputStr = "";
         $confStr = "";
 
+
+        $validate = $this->getFieldJsValidateRules($commentInfo);
+
         $this->hidden = 0; //不是隐藏元素
         if (!empty($commentInfo['htmlType'])) {
             $commentInfo['htmlType'] = strtolower($commentInfo['htmlType']);
 
             if($commentInfo['htmlType'] == 'password'){
-                $inputStr .= "<input  type=\"password\"  class=\"form-control\" name=\"$name\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo.' . $name . '}"' . " />";
+                $inputStr .= "<input {$validate}  type=\"password\"  class=\"form-control\" name=\"$name\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo.' . $name . '}"' . " />";
             }elseif ($commentInfo['htmlType'] == 'hidden'){
                 $inputStr .= "<input  type=\"hidden\"  class=\"form-control\" name=\"$name\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo.' . $name . '}"' . " />";
                 $this->hidden = 1;
             }elseif($commentInfo['htmlType'] == 'datepicker'){
                 $inputStr = '<div class="input-group date" data-provide="datepicker">
-                                <input type="text" class="form-control">
+                                <input {$validate}  type="text" class="form-control">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-th"></span>
                                 </div>
@@ -579,7 +612,7 @@ class TableInfo extends Controller
                 if ($commentInfo['htmlType'] == "select") {
 
                     $first = $this->page == 'search' ? 'first="请选择"' : "";
-                    $inputStr .= "<html:select $first options='opt_{$columnInfo['COLUMN_NAME']}' selected='{$columnInfo['COLUMN_NAME']}_selected' name=\"{$columnInfo['COLUMN_NAME']}\" />";
+                    $inputStr .= "<html:select  $first options='opt_{$columnInfo['COLUMN_NAME']}' selected='{$columnInfo['COLUMN_NAME']}_selected' name=\"{$columnInfo['COLUMN_NAME']}\" />";
                     /*$inputStr .= " <select name=\"select\" id=\"select\">";
                     foreach($commentInfo['options'] as $value => $text){
                         $inputStr.="<option value=\"{$value}\">$text</option>";
@@ -589,12 +622,12 @@ class TableInfo extends Controller
                 } elseif ($commentInfo['htmlType'] == "radio") {
 
                     foreach ($commentInfo['options'] as $value => $text) {
-                        $inputStr .= "<input name=\"select\" id=\"select\" type=\"radio\"  value=\"$value\">{$text} |";
+                        $inputStr .= "<input {$validate}  name=\"select\" id=\"select\" type=\"radio\"  value=\"$value\">{$text} |";
                     }
 
                 } elseif ($commentInfo['htmlType'] == "checkbox") {
                     foreach ($commentInfo['options'] as $value => $text) {
-                        $inputStr .= "  <input name=\"select\" id=\"select\"  type=\"checkbox\" value=\"$value\">{$text} |";
+                        $inputStr .= "  <input {$validate}  name=\"select\" id=\"select\"  type=\"checkbox\" value=\"$value\">{$text} |";
                     }
 
                     //$inputStr = "<input name=\"$name\" type=\"text\" id=\"$name\" size=\"{$inputAttribute['size']}\" />";
@@ -604,10 +637,10 @@ class TableInfo extends Controller
 
         } else {
             if ($inputAttribute['type'] == "text") {
-                $inputStr .= "<input class=\"form-control\" name=\"$name\" type=\"text\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo[' . $name . '] ? $vo[' . $name . '] : $_GET[' . $name . ']}"' . " />";
+                $inputStr .= "<input {$validate} class=\"form-control\" name=\"$name\" type=\"text\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo[' . $name . '] ? $vo[' . $name . '] : $_GET[' . $name . ']}"' . " />";
                 //$inputStr .= "<input class=\"form-control\" name=\"$name\" type=\"text\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo[$name]}"' . " />";
             } elseif ($inputAttribute['type'] == "textare") {
-                $inputStr .= "<textarea class=\"form-control\" name=\"$name\" cols=\"30\" rows=\"10\" id=\"$name\"></textarea>";
+                $inputStr .= "<textarea {$validate}  class=\"form-control\" name=\"$name\" cols=\"30\" rows=\"10\" id=\"$name\"></textarea>";
             }
         }
 
@@ -672,10 +705,10 @@ class TableInfo extends Controller
             if(empty($commentInfo['arrRules'])) continue;
             $arrRules = $commentInfo['arrRules'];
             foreach ($arrRules as $k => $v){
-                if($v == 'require'){
+                if($v['type'] == 'require'){
                     $rules[] = array($columnName,'require',$commentInfo['name'].'必须填写！');
                 }
-                if($v == 'unique'){
+                if($v['type'] == 'unique'){
                     $rules[] = array($columnName,'',$commentInfo['name'].'名称已经存在！',0,'unique',1);
                 }
 
@@ -686,6 +719,44 @@ class TableInfo extends Controller
             }
         }
         return $rules;
+    }
+
+    /**
+     *
+     */
+    function getFieldJsValidateRules($commentInfo){
+//var_dump($commentInfo);
+        $strValidate = '';
+        foreach ($commentInfo['arrRules'] as $k => $v){
+            //datatype="*6-15" errormsg="密码范围在6~15位之间！"
+            if($v['type'] == 'require'){
+                if($v['msg']){
+                    $strValidate .= 'nullmsg="'.$v['msg'].'"';
+                }else{
+                    $strValidate .= 'nullmsg="请填写信息"';
+                }
+            }
+
+            if($v['type'] == 'reg'){
+                //正则验证
+                $strValidate .= 'datatype="'.$v['reg'].'" ';
+                if($v['msg']){
+                    $strValidate .= 'errormsg="'.$v['msg'].'"';
+                }else{
+                    $strValidate .= 'errormsg="正则验证不通过"';
+                }
+            }elseif($v['type'] == 'email'){
+                $strValidate .= 'datatype="e"  ';
+                if($v['msg']){
+                    $strValidate .= 'errormsg="'.$v['msg'].'"';
+                }else{
+                    $strValidate .= 'errormsg="邮箱格式不正确"';
+                }
+            }
+
+            //var_dump($v);
+        }
+        return $strValidate;
     }
 
 
