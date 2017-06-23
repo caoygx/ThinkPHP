@@ -606,7 +606,7 @@ class TableInfo extends Controller
 
 
             }elseif($commentInfo['htmlType'] == 'editor'){
-                $inputStr .= "<html:editor id=\"editor\" name=\"remark\" type=\"kindeditor\" style=\"\" ></html:editor>"; //{$vo.remark}
+                $inputStr .= "<html:editor id=\"editor\" name=\"$name\" type=\"kindeditor\" style=\"width:680px;height:300px;visibility:hidden;\" ></html:editor>"; //{$vo.remark}
 
             }
 
@@ -648,7 +648,7 @@ class TableInfo extends Controller
                 $inputStr .= "<input {$validate} class=\"form-control\" name=\"$name\" type=\"text\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo[' . $name . '] ? $vo[' . $name . '] : $_GET[' . $name . ']}"' . " />";
                 //$inputStr .= "<input class=\"form-control\" name=\"$name\" type=\"text\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo[$name]}"' . " />";
             } elseif ($inputAttribute['type'] == "textare") {
-                $inputStr .= "<textarea {$validate}  class=\"form-control\" name=\"$name\" cols=\"30\" rows=\"10\" id=\"$name\"></textarea>";
+                $inputStr .= "<textarea {$validate}  class=\"form-control\" name=\"$name\" style=\"width:800px;height:400px;visibility:hidden;\" id=\"$name\"></textarea>";
             } elseif ( in_array($inputAttribute['type'],['date','time']) ){
                 $inputStr .= '<div class="input-group date" id="datetimepicker1">
                     <input type="text" class="form-control" />
