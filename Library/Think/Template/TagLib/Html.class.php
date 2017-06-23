@@ -149,9 +149,9 @@ class Html extends TagLib
         $onchange   = $tag['change'];
 
         if (!empty($multiple)) {
-            $parseStr = '<select id="' . $id . '" name="' . $name . '" ondblclick="' . $ondblclick . '" onchange="' . $onchange . '" multiple="multiple" class="' . $style . '" size="' . $size . '" >';
+            $parseStr = '<select autocomplete="off" id="' . $id . '" name="' . $name . '" ondblclick="' . $ondblclick . '" onchange="' . $onchange . '" multiple="multiple" class="' . $style . '" size="' . $size . '" >';
         } else {
-            $parseStr = '<select id="' . $id . '" name="' . $name . '" onchange="' . $onchange . '" ondblclick="' . $ondblclick . '" class="' . $style . '" >';
+            $parseStr = '<select autocomplete="off" id="' . $id . '" name="' . $name . '" onchange="' . $onchange . '" ondblclick="' . $ondblclick . '" class="' . $style . '" >';
         }
         if (!empty($first)) {
             $parseStr .= '<option value="" >' . $first . '</option>';

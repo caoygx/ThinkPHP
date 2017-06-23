@@ -9,6 +9,7 @@ class TableInfo extends Controller
     protected $options = []; //存储数组序列化后的字符串格式
     protected $arrOptions = []; //存储数组格式
     public $page = null;
+    public $data = null; //记录的值
 
     /**
      * TableInfo constructor.
@@ -536,14 +537,16 @@ class TableInfo extends Controller
     function createFormRow($columnInfo)
     {
         $inputAttribute = [];
-        $typeInfo = $this->getColumnType($columnInfo['COLUMN_TYPE']);
-        $type = strtoupper($columnInfo['type']);
+        //$typeInfo = $this->getColumnType($columnInfo['COLUMN_TYPE']);
+        $type = strtoupper($columnInfo['DATA_TYPE']);
         if (in_array($type, ["TINYINT", "SMALLINT", "MEDIUMINT", "INT", "BIGINT", "FLOAT", "DOUBLE", "DECIMAL"])) { //数字类型
             $inputAttribute['type'] = "text";
             $inputAttribute['size'] = 10;
-        } elseif (in_array($type, ["DATE", "TIME", "YEAR", "DATETIME", "TIMESTAMP"])) { //日期类型
+        } elseif (in_array($type, ["DATE",  "YEAR"])) { //日期类型
             $inputAttribute['type'] = "date";
-        } elseif (in_array($type, ["CHAR", "VARCHAR", "TINYBLOB", "TINYTEXT"])) { //小文本
+        }elseif (in_array($type,["TIME","DATETIME", "TIMESTAMP" ])){
+            $inputAttribute['type'] = "time";
+        }elseif (in_array($type, ["CHAR", "VARCHAR", "TINYBLOB", "TINYTEXT"])) { //小文本
             $inputAttribute['type'] = "text";
             $inputAttribute['size'] = 30;
             if ($type == "varchar" && $columnInfo['size'] > 255) { //大文本域
@@ -574,6 +577,8 @@ class TableInfo extends Controller
 
         $validate = $this->getFieldJsValidateRules($commentInfo);
 
+        var_dump($commentInfo);
+        var_dump($inputAttribute);
         $this->hidden = 0; //不是隐藏元素
         if (!empty($commentInfo['htmlType'])) {
             $commentInfo['htmlType'] = strtolower($commentInfo['htmlType']);
@@ -584,17 +589,17 @@ class TableInfo extends Controller
                 $inputStr .= "<input  type=\"hidden\"  class=\"form-control\" name=\"$name\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo.' . $name . '}"' . " />";
                 $this->hidden = 1;
             }elseif($commentInfo['htmlType'] == 'datepicker'){
-                $inputStr = '<div class="input-group date" data-provide="datepicker">
-                                <input {$validate}  type="text" class="form-control">
+                $inputStr = '<div class="input-group date" data-provide="datepicker"> 
+                                <input {$validate}  type="text" id="'.$name.'"  name="'.$name.'" class="form-control" value="'. '{$vo.' . $name . '}' .'" >
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-th"></span>
                                 </div>
                             </div>';
-               /* $inputStr .= "<input size=\"16\" type=\"text\" value=\"\" readonly class=\"form_datetime\">";*/
                 $inputStr .= ' <script>
                                     $(".date").datepicker({
                                     language:"zh-CN",
-                                    format: "yyyy-mm-dd "
+                                    format: "yyyy-mm-dd ",
+                                    autoclose:true
                                 });
                             </script>';
 
@@ -612,6 +617,9 @@ class TableInfo extends Controller
                 if ($commentInfo['htmlType'] == "select") {
 
                     $first = $this->page == 'search' ? 'first="请选择"' : "";
+                    if($this->page == 'edit'){
+                        $this->assign("{$columnInfo['COLUMN_NAME']}_selected", $this->data[$columnInfo['COLUMN_NAME']]);
+                    }
                     $inputStr .= "<html:select  $first options='opt_{$columnInfo['COLUMN_NAME']}' selected='{$columnInfo['COLUMN_NAME']}_selected' name=\"{$columnInfo['COLUMN_NAME']}\" />";
                     /*$inputStr .= " <select name=\"select\" id=\"select\">";
                     foreach($commentInfo['options'] as $value => $text){
@@ -641,6 +649,60 @@ class TableInfo extends Controller
                 //$inputStr .= "<input class=\"form-control\" name=\"$name\" type=\"text\" id=\"$name\" size=\"{$inputAttribute['size']}\" value=" . '"{$vo[$name]}"' . " />";
             } elseif ($inputAttribute['type'] == "textare") {
                 $inputStr .= "<textarea {$validate}  class=\"form-control\" name=\"$name\" cols=\"30\" rows=\"10\" id=\"$name\"></textarea>";
+            } elseif ( in_array($inputAttribute['type'],['date','time']) ){
+                $inputStr .= '<div class="input-group date" id="datetimepicker1">
+                    <input type="text" class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>';
+
+                if($inputAttribute['type'] == 'date') {
+                    $inputStr .= '<script>
+                    $(function () {
+                        $("#datetimepicker1").datetimepicker({
+                                    format: "YYYY-MM-DD ",
+                                });
+                     });
+                    </script>';
+
+                }else{
+                    $inputStr .= '<script>
+                    $(function () {
+                        $("#datetimepicker1").datetimepicker({
+                                    format: "YYYY-MM-DD HH:mm:ss",
+                                });
+                     });
+                    </script>';
+                }
+
+               /* $inputStr = '<div class="input-group date" data-provide="datepicker">
+                                <input {$validate}  type="text" id="'.$name.'"  name="'.$name.'" class="form-control" value="'. '{$vo.' . $name . '}' .'" >
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>';
+
+                if($inputAttribute['type'] == 'date'){
+                    $inputStr .= ' <script>
+                                    $(".date").datepicker({
+                                    language:"zh-CN",
+                                    format: "yyyy-mm-dd ",
+                                    autoclose:true
+                                });
+                            </script>';
+                }else {
+                    $inputStr .= ' <script>
+                                    $(".date").datepicker({
+                                    language:"zh-CN",
+                                    format: "yyyy-mm-dd 时间控件",
+                                    autoclose:true
+                                });
+                            </script>';
+
+                }*/
+
+
             }
         }
 
