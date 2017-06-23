@@ -588,7 +588,7 @@ class TableInfo extends Controller
                 $this->hidden = 1;
             }elseif($commentInfo['htmlType'] == 'datepicker'){
                 $inputStr = '<div class="input-group date" data-provide="datepicker"> 
-                                <input {$validate}  type="text" id="'.$name.'"  name="'.$name.'" class="form-control" value="'. '{$vo.' . $name . '}' .'" >
+                                <input {$validate}  type="text" id="'.$name.'"  name="'.$name.'" class="form-control" value="'. '{$vo[' . $name . '] ? $vo[' . $name . '] : $_GET[' . $name . ']}'.'" >
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-th"></span>
                                 </div>
@@ -614,11 +614,16 @@ class TableInfo extends Controller
                 $this->arrOptions[$columnInfo['COLUMN_NAME']] = $commentInfo['options'];
                 if ($commentInfo['htmlType'] == "select") {
 
-                    $first = $this->page == 'search' ? 'first="请选择"' : "";
+                    $first =  "";
+                    if($this->page == 'search'){
+                        $first = 'first="请选择"';
+                        $this->assign("{$name}_selected", I($name));
+                    }
+
                     if($this->page == 'edit'){
                         $this->assign("{$columnInfo['COLUMN_NAME']}_selected", $this->data[$columnInfo['COLUMN_NAME']]);
                     }
-                    $inputStr .= "<html:select  $first options='opt_{$columnInfo['COLUMN_NAME']}' selected='{$columnInfo['COLUMN_NAME']}_selected' name=\"{$columnInfo['COLUMN_NAME']}\" />";
+                    $inputStr .= "<html:select  $first options='opt_{$name}' selected='{$name}_selected' name=\"{$name}\" />";
                     /*$inputStr .= " <select name=\"select\" id=\"select\">";
                     foreach($commentInfo['options'] as $value => $text){
                         $inputStr.="<option value=\"{$value}\">$text</option>";
@@ -649,7 +654,7 @@ class TableInfo extends Controller
                 $inputStr .= "<textarea {$validate}  class=\"form-control\" name=\"$name\" style=\"width:800px;height:400px;visibility:hidden;\" id=\"$name\"></textarea>";
             } elseif ( in_array($inputAttribute['type'],['date','time']) ){
                 $inputStr .= '<div class="input-group date" id="datetimepicker1">
-                    <input type="text" class="form-control" />
+                    <input type="text" id="'.$name.'" name="'.$name.'" class="form-control" '. '"{$vo[' . $name . '] ? $vo[' . $name . '] : $_GET[' . $name . ']}"'.' />
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
