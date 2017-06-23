@@ -577,8 +577,6 @@ class TableInfo extends Controller
 
         $validate = $this->getFieldJsValidateRules($commentInfo);
 
-        var_dump($commentInfo);
-        var_dump($inputAttribute);
         $this->hidden = 0; //不是隐藏元素
         if (!empty($commentInfo['htmlType'])) {
             $commentInfo['htmlType'] = strtolower($commentInfo['htmlType']);
