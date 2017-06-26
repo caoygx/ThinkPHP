@@ -654,7 +654,7 @@ class TableInfo extends Controller
                 $inputStr .= "<textarea {$validate}  class=\"form-control\" name=\"$name\" style=\"width:800px;height:400px;visibility:hidden;\" id=\"$name\"></textarea>";
             } elseif ( in_array($inputAttribute['type'],['date','time']) ){
                 $inputStr .= '<div class="input-group date" id="datetimepicker1">
-                    <input type="text" id="'.$name.'" name="'.$name.'" class="form-control" '. '"{$vo[' . $name . '] ? $vo[' . $name . '] : $_GET[' . $name . ']}"'.' />
+                    <input type="text" id="'.$name.'" name="'.$name.'" class="form-control" value= '. '"{$vo[' . $name . '] ? $vo[' . $name . '] : $_GET[' . $name . ']}"'.' />
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
