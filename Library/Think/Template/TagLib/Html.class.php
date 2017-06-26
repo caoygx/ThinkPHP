@@ -62,7 +62,7 @@ class Html extends TagLib
                 $parseStr = '<script type="text/javascript" src="__ROOT__/Public/Js/UbbEditor.js"></script><div style="padding:1px;width:' . $width . ';border:1px solid silver;float:left;"><script LANGUAGE="JavaScript"> showTool(); </script></div><div><TEXTAREA id="UBBEditor" name="' . $name . '"  style="clear:both;float:none;width:' . $width . ';height:' . $height . '" >' . $content . '</TEXTAREA></div><div style="padding:1px;width:' . $width . ';border:1px solid silver;float:left;"><script LANGUAGE="JavaScript">showEmot();  </script></div>';
                 break;
             case 'KINDEDITOR':
-                $parseStr = '<script type="text/javascript" src="__ROOT__/Public/Js/kindeditor/kindeditor-all-min.js"></script>
+                $parseStr = '<script type="text/javascript" src="http://rrbrr.oss-cn-shanghai.aliyuncs.com/Plugin/kindeditor-4.1.7/kindeditor-all-min.js"></script>
                             
                             <script>
                                     KindEditor.ready(function(K) {
