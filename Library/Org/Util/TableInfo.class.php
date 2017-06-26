@@ -380,7 +380,7 @@ class TableInfo extends Controller
 
     const ADD = 8; //1000
     const EDIT = 4; //0100
-    const LIST = 2; //0010
+    const LISTS = 2; //0010
     const SEARCH = 1; //0001
 
     /**
@@ -493,7 +493,7 @@ class TableInfo extends Controller
         $arrShowPages = [];
         if ($showPage & self::ADD) $arrShowPages[] = 'add';
         if ($showPage & self::EDIT) $arrShowPages[] = 'edit';
-        if ($showPage & self::LIST) $arrShowPages[] = 'list';
+        if ($showPage & self::LISTS) $arrShowPages[] = 'list';
         if ($showPage & self::SEARCH) $arrShowPages[] = 'search';
 
         //选项分析
