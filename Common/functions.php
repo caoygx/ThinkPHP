@@ -2295,3 +2295,7 @@ function getUserInfo(){
 
 
 
+//cgf获取选项值
+function optionsValue($key,$fieldName){
+    return C($fieldName)[$key];
+}
