@@ -180,7 +180,8 @@ abstract class Controller
                 $this->_empty($method, $args);
             } elseif (file_exists_case($this->view->parseTemplate())) {
                 // 检查是否存在默认模版 如果有直接输出模版
-                $this->display();
+                //$this->display();
+                $this->toview();
             } else {
                 E(L('_ERROR_ACTION_') . ':' . ACTION_NAME);
             }
