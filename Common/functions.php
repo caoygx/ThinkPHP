@@ -2299,3 +2299,14 @@ function getUserInfo(){
 function optionsValue($key,$fieldName){
     return C($fieldName)[$key];
 }
+
+
+//参数签名
+function parameters_sign($parameters,$key='123456',$secret='654321' ){
+    ksort($parameters);
+    $str = "";
+    foreach ($parameters as $k => $v) {
+        $str .= $k.$v;
+    }
+    return strtolower(sha1($key.$str.$secret));
+}
