@@ -418,6 +418,9 @@ class TableInfo extends Controller
      */
     function parseComment($comment)
     {
+        if(empty($comment)) {
+            echo '注释为空';
+        }
         //先提取正则，避免正则里的特殊符号污染后面处理
         $reg = '/<<(.+)>>/';
         $validateReg = '';
@@ -457,7 +460,7 @@ class TableInfo extends Controller
 
         }
 
-        /*       var_dump($title);
+         /*      var_dump($title);
                var_dump($showPage);
                var_dump($checkType);
                var_dump($options);*/
