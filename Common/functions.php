@@ -286,6 +286,51 @@ function T($template = '', $layer = '')
     return $baseUrl . ($theme ? $theme . '/' : '') . $file . C('TMPL_TEMPLATE_SUFFIX');
 }
 
+//非空参数获取
+function I2($name, $typeVerify=false){
+
+    if($typeVerify){ //类型验证
+        if (strpos($name, '/')) {
+            // 指定修饰符
+            list($name, $type) = explode('/', $name, 2);
+        } elseif (C('VAR_AUTO_STRING')) {
+            // 默认强制转换为字符串
+            $type = 's';
+        }
+
+        if (!empty($type)) {
+            $value = $_REQUEST[$name];
+            switch (strtolower($type)) {
+                case 'a':    // 数组
+                    !is_array($value) && E($name.'类型必须是 array');
+                    break;
+                case 'd':    // 数字
+                    !is_numeric($value) && E($name.'类型必须是 int');
+                    break;
+//                case 'f':    // 浮点
+//                    !is_float($value) && E($name.'类型必须是 float');
+//                    break;
+                case 'b':    // 布尔
+                    $value = strtolower($value);
+                    if($value != 'true' && $value != 'false'){
+                        E($name.'类型必须是 Bool');
+                    }
+                    break;
+                case 's':// 字符串
+                default:
+                    !is_string($value) && E($name.'类型必须是 string');
+            }
+        }
+    }
+
+    $value = I($name);
+    if(empty($value)){
+        list($name, $type) = explode('/', $name, 2);
+        E($name.'不能为空');
+    }
+
+    return $value;
+}
 /**
  * 获取输入参数 支持过滤和默认值
  * 使用方法:
@@ -2309,4 +2354,54 @@ function parameters_sign($parameters,$key='123456',$secret='654321' ){
         $str .= $k.$v;
     }
     return strtolower(sha1($key.$str.$secret));
+}
+
+
+function ajaxReturn($data, $type = '', $json_option = 0)
+{
+    if (empty($type)) {
+        $type = C('DEFAULT_AJAX_RETURN');
+    }
+
+    switch (strtoupper($type)) {
+        case 'JSON':
+            // 返回JSON数据格式到客户端 包含状态信息
+            header('Content-Type:application/json; charset=utf-8');
+            exit(json_encode($data, $json_option));
+        case 'XML':
+            // 返回xml格式数据
+            header('Content-Type:text/xml; charset=utf-8');
+            exit(xml_encode($data));
+        case 'JSONP':
+            // 返回JSON数据格式到客户端 包含状态信息
+            header('Content-Type:application/json; charset=utf-8');
+            $handler = isset($_GET[C('VAR_JSONP_HANDLER')]) ? $_GET[C('VAR_JSONP_HANDLER')] : C('DEFAULT_JSONP_HANDLER');
+            exit($handler . '(' . json_encode($data, $json_option) . ');');
+        case 'EVAL':
+            // 返回可执行的js脚本
+            header('Content-Type:text/html; charset=utf-8');
+            exit($data);
+        default:
+            // 用于扩展其他返回格式数据
+            Hook::listen('ajax_return', $data);
+    }
+}
+
+
+ function success($data, $type = '', $json_option = 0)
+{
+    $ret = [];
+    $ret['code'] = 1;
+    $ret['msg'] = 'success';
+    $ret['data'] = $data;
+    ajaxReturn($ret,C('ret_format'));
+
+}
+
+function error($msg,$extra=''){
+    $ret = [];
+    $ret['code'] = 0;
+    $ret['msg'] = $msg;
+    $ret['data'] = $extra;
+    ajaxReturn($ret,C('ret_format'));
 }

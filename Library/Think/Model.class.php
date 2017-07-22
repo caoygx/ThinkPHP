@@ -1076,7 +1076,8 @@ class Model
     {
         // 如果没有传值默认取POST数据
         if (empty($data)) {
-            $data = I('post.');
+            //$data = I('post.');
+            $data = I('');
         } elseif (is_object($data)) {
             $data = get_object_vars($data);
         }
