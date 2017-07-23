@@ -2246,18 +2246,9 @@ function is_json($string) {
 function setUserAuth($u){
     //$u = array();
     if (C('AUTH_STORE_WAY') == 'session') {
-        //var_dump($u);
-
-        $_SESSION[C('USER_AUTH_KEY')] = $u['id'];
         $_SESSION["username"] = $u['username'];
-
     }else{
-        import("ORG.Util.Cookie");
-        //var_dump(Cookie::b("uid", $u['uid']));
-        //$id = Cookie::get(C('USER_AUTH_KEY'));
-        cookie("username",$u['username']);
-        cookie("uid", \Think\Crypt::encrypt($u['uid'],C('crypt_key')));
-        cookie('type', $u['type']);
+        cookie("user_id", \Think\Crypt::encrypt($u['user_id'],C('crypt_key')));
     }
 }
 
@@ -2268,20 +2259,24 @@ function getUserAuth(){
     $u = array();
     if (C('AUTH_STORE_WAY') == 'session') {
         $id = $_SESSION[C('USER_AUTH_KEY')];
-        $u['username'] = $_SESSION["username"];
-        $u['uid'] = $_SESSION[C('USER_AUTH_KEY')];
-        $u['type'] = $_SESSION['type'];
-        $u = array_filter($u);
+        $u['user_id'] = $_SESSION[C('USER_AUTH_KEY')];
+    }elseif($user_id = I('user_id')){
+        $u['user_id'] =\Think\Crypt::decrypt(cookie('user_id',""),C('crypt_key'));
 
     }else{
         //$id = cookie(C('USER_AUTH_KEY'));
-        $u['username'] = cookie("username","");
-        $u['uid'] = \Think\Crypt::decrypt(cookie('uid',""),C('crypt_key'));
-        $u['type'] = cookie('type',"");
-        $u = array_filter($u);
+        $u['user_id'] = \Think\Crypt::decrypt(cookie('user_id',""),C('crypt_key'));
+
         //var_dump($_COOKIE);
         //exit;
     }
+    //$a = \Think\Crypt::encrypt('1234',C('crypt_key'));
+    //var_dump($a);
+    //$b = \Think\Crypt::decrypt($a,C('crypt_key'));
+    //var_dump($b);exit;
+    //var_dump($_COOKIE);
+    //var_dump($u);exit;
+    $u = array_filter($u);
 
     return $u;
 }
@@ -2300,7 +2295,7 @@ function clearUserAuth(){
     }else{
 
         cookie("username",null);
-        cookie("uid",null);
+        cookie("user_id",null);
     }
     return $u;
 }

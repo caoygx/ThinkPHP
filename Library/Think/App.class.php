@@ -49,7 +49,13 @@ class App
         // URL调度结束标签
         Hook::listen('url_dispatch');
 
-        define('IS_AJAX', ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || !empty($_POST[C('VAR_AJAX_SUBMIT')]) || !empty($_GET[C('VAR_AJAX_SUBMIT')])) ? true : false);
+        $is_ajax = ( (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+            || !empty($_POST[C('VAR_AJAX_SUBMIT')])
+            || !empty($_GET[C('VAR_AJAX_SUBMIT')])
+            || ($_POST['ret_format'] == 'json')
+            || ($_GET['ret_format'] == 'json')
+        );
+        define('IS_AJAX',$is_ajax );
 
         // TMPL_EXCEPTION_FILE 改为绝对地址
         C('TMPL_EXCEPTION_FILE', realpath(C('TMPL_EXCEPTION_FILE')));

@@ -230,6 +230,7 @@ abstract class Controller
         if (empty($type)) {
             $type = C('DEFAULT_AJAX_RETURN');
         }
+        if(empty($json_option)) $json_option = JSON_UNESCAPED_UNICODE;
 
         switch (strtoupper($type)) {
             case 'JSON':
