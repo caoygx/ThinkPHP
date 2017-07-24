@@ -252,6 +252,10 @@ class Think
         }
         $error['trace'] = $e->getTraceAsString();
         Log::record($error['message'], Log::ERR);
+        $ret_format = C("ret_format");
+        if($ret_format == 'json'){
+            error($error['message'],$error);
+        }
         // 发送404信息
         header('HTTP/1.1 404 Not Found');
         header('Status:404 Not Found');
