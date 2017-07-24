@@ -213,7 +213,7 @@ class App
         Hook::listen('app_begin');
         // Session初始化
         if (!IS_CLI) {
-            session(C('SESSION_OPTIONS'));
+            //session(C('SESSION_OPTIONS'));
         }
         // 记录应用初始化时间
         G('initTime');
