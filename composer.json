@@ -1,0 +1,24 @@
+{
+    "config": {
+        "vendor-dir": "Library/Vendor"
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "digitick/yii-google-analytics",
+                "version": "master",
+                "source": {
+                    "url": "https://github.com/digitick/yii-google-analytics",
+                    "type": "git",
+                    "reference": "master"
+                }
+            }
+        }
+    ],
+    "require": {
+         "monolog/monolog": "1.2.*"
+    },
+    "minimum-stability": "dev"
+
+}
