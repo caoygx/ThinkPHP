@@ -2245,10 +2245,16 @@ function is_json($string) {
  */
 function setUserAuth($u){
     //$u = array();
+
     if (C('AUTH_STORE_WAY') == 'session') {
         $_SESSION["username"] = $u['username'];
     }else{
-        cookie("user_id", \Think\Crypt::encrypt($u['user_id'],C('crypt_key')));
+        if(C('AUTH_ENCRYPT')){
+            cookie("user_id", \Think\Crypt::encrypt($u['user_id'],C('crypt_key')));
+        }else{
+            //var_dump($u['user_id']);
+            cookie("user_id", $u['user_id']);
+        }
     }
 }
 
@@ -2261,12 +2267,18 @@ function getUserAuth(){
         $id = $_SESSION[C('USER_AUTH_KEY')];
         $u['user_id'] = $_SESSION[C('USER_AUTH_KEY')];
     }elseif($user_id = I('user_id')){
-        $u['user_id'] =\Think\Crypt::decrypt(cookie('user_id',""),C('crypt_key'));
+        if(C('AUTH_ENCRYPT')) {
+            $u['user_id'] = \Think\Crypt::decrypt(cookie('user_id', ""), C('crypt_key'));
+        }else{
+            $u['user_id'] =cookie('user_id',"");
+        }
 
     }else{
-        //$id = cookie(C('USER_AUTH_KEY'));
-        $u['user_id'] = \Think\Crypt::decrypt(cookie('user_id',""),C('crypt_key'));
-
+        if(C('AUTH_ENCRYPT')){
+            $u['user_id'] = \Think\Crypt::decrypt(cookie('user_id',""),C('crypt_key'));
+        }else {
+            $u['user_id'] = cookie('user_id', "");
+        }
         //var_dump($_COOKIE);
         //exit;
     }
