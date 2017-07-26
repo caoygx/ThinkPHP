@@ -250,7 +250,7 @@ class Think
             $error['file'] = $e->getFile();
             $error['line'] = $e->getLine();
         }
-        $error['trace'] = $e->getTraceAsString();
+        $error['trace'] = getExceptionTraceAsString($e);
         Log::record($error['message'], Log::ERR);
         $ret_format = C("ret_format");
         if($ret_format == 'json'){
