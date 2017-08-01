@@ -2207,7 +2207,7 @@ function curl_get_content($url, $data = "", $method = "get", $timeout = 30, $CA 
     $headerArr[] = 'PARAMS:android#1.4.2#wandoujias';
     if($data_is_json) $headerArr[] = 'Content-Type: application/json; charset=utf-8';
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headerArr);
-    //curl_setopt($ch, CURLOPT_PROXY, "192.168.3.111:8888");
+    curl_setopt($ch, CURLOPT_PROXY, "192.168.3.211:8888");
     $ret = curl_exec($ch);
     if(empty($ret)) {
         var_dump(curl_error($ch)); // 查看报错信息
@@ -4115,3 +4115,35 @@ function pinyinToCN($pinyin){
 }
 
 
+
+
+
+
+
+
+
+
+function debug($data){
+
+    if(IS_CLI) return false;
+
+    $output_way = C('output_way');
+    if($output_way == 'firefox'){
+
+        Vendor('BrowserLog.fb');
+        fb($data);
+        //FB::info($data);
+    }elseif($output_way == 'chrome'){
+        Vendor('BrowserLog.ChromePhp');
+        ChromePhp::info($data);
+    }elseif($output_way == 'slog'){
+        Vendor('BrowserLog.slog_function');
+        slog($data);
+    }else{
+        //var_dump($data);exit;
+    }
+
+
+
+
+}

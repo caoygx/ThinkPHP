@@ -184,6 +184,7 @@ abstract class Driver
             }
         }
         $this->bind = array();
+        debug($this->queryStr);
         try {
             $result = $this->PDOStatement->execute();
             // 调试结束
@@ -244,6 +245,7 @@ abstract class Driver
             }
         }
         $this->bind = array();
+        debug($this->queryStr);
         try {
             $result = $this->PDOStatement->execute();
             // 调试结束
