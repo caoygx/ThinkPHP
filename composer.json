@@ -1,6 +1,6 @@
 {
     "config": {
-        "vendor-dir": "Library/Vendor"
+        
     },
     "repositories": [
         {
@@ -17,8 +17,12 @@
         }
     ],
     "require": {
-         "monolog/monolog": "1.2.*"
+        "guzzlehttp/guzzle": "~6.3",
+        "pingplusplus/pingpp-php": "2.2.3"
     },
-    "minimum-stability": "dev"
-
+    "minimum-stability": "dev",
+    "require-dev": {
+        "phpunit/phpunit": "^6.2",
+        "zt/unit-test":"*"
+    }
 }
