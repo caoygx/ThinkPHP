@@ -26,6 +26,10 @@ class ComposerStaticInit244003a0152264da26e47e80d407706e
             'Psr\\Http\\Message\\' => 17,
             'Pingpp\\' => 7,
         ),
+        'H' => 
+        array (
+            'HtmlParser\\' => 11,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
@@ -57,6 +61,10 @@ class ComposerStaticInit244003a0152264da26e47e80d407706e
         'Pingpp\\' => 
         array (
             0 => __DIR__ . '/..' . '/pingplusplus/pingpp-php/lib',
+        ),
+        'HtmlParser\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/bupt1987/html-parser/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (

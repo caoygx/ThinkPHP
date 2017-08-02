@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6fe73faa012f80da60235fec3c12b4f0",
-    "content-hash": "7684b6f7052c17ea5a27b92ee6a217a4",
+    "hash": "d8b23a713cbbeb9fc9efe0538ff17706",
+    "content-hash": "bf2c720d964142d4e497838d5ad4f489",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -288,6 +288,48 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "bupt1987/html-parser",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bupt1987/html-parser.git",
+                "reference": "a30c4fc9355acf869167cbc8a78ccb72c608d8ab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bupt1987/html-parser/zipball/a30c4fc9355acf869167cbc8a78ccb72c608d8ab",
+                "reference": "a30c4fc9355acf869167cbc8a78ccb72c608d8ab",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "HtmlParser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "俊杰jerry",
+                    "email": "bupt1987@gmail.com",
+                    "homepage": "http://bupt1987.github.io",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Html Parser",
+            "homepage": "https://github.com/bupt1987/html-parser",
+            "time": "2016-08-19 03:50:49"
+        },
         {
             "name": "doctrine/instantiator",
             "version": "1.0.x-dev",
@@ -1782,7 +1824,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "bupt1987/html-parser": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

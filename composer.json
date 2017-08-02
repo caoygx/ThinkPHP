@@ -23,6 +23,7 @@
     "minimum-stability": "dev",
     "require-dev": {
         "phpunit/phpunit": "^6.2",
-        "zt/unit-test":"*"
+        "zt/unit-test":"*",
+        "bupt1987/html-parser":"dev-master"
     }
 }
