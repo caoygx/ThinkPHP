@@ -159,7 +159,7 @@ class Html extends TagLib
         if (!empty($options)) {
             $parseStr .= '<?php  foreach($' . $options . ' as $key=>$val) { ?>';
             if (!empty($selected)) {
-                $parseStr .= '<?php if(isset($' . $selected . ') && ($' . $selected . ' == $key || in_array($key,$' . $selected . '))) { ?>';
+                $parseStr .= '<?php if(($' . $selected . ' !== "") && ($' . $selected . ' == $key || in_array($key,$' . $selected . '))) { ?>';
                 $parseStr .= '<option selected="selected" value="<?php echo $key ?>"><?php echo $val ?></option>';
                 $parseStr .= '<?php }else { ?><option value="<?php echo $key ?>"><?php echo $val ?></option>';
                 $parseStr .= '<?php } ?>';
@@ -170,7 +170,7 @@ class Html extends TagLib
         } else if (!empty($values)) {
             $parseStr .= '<?php  for($i=0;$i<count($' . $values . ');$i++) { ?>';
             if (!empty($selected)) {
-                $parseStr .= '<?php if(isset($' . $selected . ') && ((is_string($' . $selected . ') && $' . $selected . ' == $' . $values . '[$i]) || (is_array($' . $selected . ') && in_array($' . $values . '[$i],$' . $selected . ')))) { ?>';
+                $parseStr .= '<?php if(($' . $selected . ' !== "") && ((is_string($' . $selected . ') && $' . $selected . ' == $' . $values . '[$i]) || (is_array($' . $selected . ') && in_array($' . $values . '[$i],$' . $selected . ')))) { ?>';
                 $parseStr .= '<option selected="selected" value="<?php echo $' . $values . '[$i] ?>"><?php echo $' . $output . '[$i] ?></option>';
                 $parseStr .= '<?php }else { ?><option value="<?php echo $' . $values . '[$i] ?>"><?php echo $' . $output . '[$i] ?></option>';
                 $parseStr .= '<?php } ?>';
